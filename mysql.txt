@@ -1,0 +1,22 @@
+<?php
+require('db.php');
+use thiagoalessio\TesseractOCR\TesseractOCR;
+
+$image_path = $_GET['image_path'];
+if(isset($image_path)){
+	
+	$calistir = new TesseractOCR($image_path))->run();
+$query = mysql_query("SELECT * FROM keys WHERE key = $calistir LIMIT 1");
+
+$num_rows = mysql_num_rows($query);
+ 
+if ($num_rows > 0) {
+echo 'Aktivasyon basarili!';
+}
+else {
+  echo 'aktivasyon basarisiz!';
+}
+}
+
+
+?>

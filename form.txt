@@ -1,0 +1,6 @@
+<h1>ahmeth4n.github.io</h1><br>
+<form action="read.php" method="POST" enctype="multipart/form-data">
+    Resim yükle!:
+    <input type="file" name="image_path" id="fileToUpload">
+    <input type="submit" value="Yükle!" name="submit">
+</form>

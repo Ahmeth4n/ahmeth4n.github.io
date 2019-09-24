@@ -1,0 +1,9 @@
+<?php
+/*
+*   ahmeth4n.github.io
+*/
+$image_path = $_POST['image_path'];
+use thiagoalessio\TesseractOCR\TesseractOCR;
+echo (new TesseractOCR($image_path))
+    ->run();
+?>
