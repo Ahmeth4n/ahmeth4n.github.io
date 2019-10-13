@@ -1,0 +1,79 @@
+
+<style>
+    body {
+        font-family: 'Roboto';font-size: 17px;
+    }
+    </style>
+    
+    <html>
+      <head>
+      <meta charset="UTF-8">
+      <meta name="description" content="Exploitation Thru OCR">
+      <meta name="keywords" content="ahmethan gultekin">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+        <title>Ahmethan Gultekin / 90 kg developer!</title>
+      </head>
+      <body>
+       <center>
+    <div style="width:566px;">
+        <img src = "https://upload.wikimedia.org/wikipedia/en/5/55/Bsd_daemon.jpg">
+        <br>
+          <h1>Paypal XXE & OOB Vulnerability</h1>
+<p>
+Selamlar. Uzun zamandır blog yazmaya fırsat bulamıyordum , can sıkıntısına kasmış olduğum yerden 3-5 bişey çıkınca
+blog bi hava alsın diye girdim bişeyler karalamaya. O kadar uzun zamandır yazmıyorum ki en son yazdığımda 90 kiloymuşum (sayfa titlesinden de belli) şuan 83'üm. Neyse.<br>
+<br><br>
+Yazıya başlamadan önce her konuda yardım eden Murat Yılmazlar ' a ve exploiting esnasında yardım eden 0x94'e teşekkürlerimi sunarım.
+<br>O zaman lets go!
+
+<br><br>
+<h1>Oynat Gelsin :</h1><br><br>
+Subdomainlere bakarken bir subdomainde login forma denk geldim. Önce rastgele bir data yollayıp ne tepki vereceğine baktım.
+<br><br>
+<a href = "https://resimag.com/p1/24009cfb93c.png"><img src = "https://resimag.com/p1/24009cfb93c.png" style = "width:566px"></a>
+<br><br>
+Daha sonra adettendir diyerek tırnak atarak , payloadlar deneyerek burpte biraz datayı kurcaladım ve bir syntax hatası aldım.<br>
+<br><br>
+<a href = "https://resimag.com/p1/da7df19a887.jpeg"><img src = "https://resimag.com/p1/da7df19a887.jpeg" style = "width:566px"></a>
+
+<br><br>
+Hatayı buraya da bırakayım;
+<br><br>
+<span>
+    {
+
+        "message" : "javax.xml.bind.UnmarshalException\n - with linked exception:\n[org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 2; The markup in the document preceding the root element must be well-formed.]"
+        
+        }
+    </span>
+<br><br>
+Bişeyler döndüğü çok belliydi ama gece 2'de böyle kafa yoran şeylerle uğraşınca insanın beyni duruyor. Hatayı alıp googlede aratmak veya kullanılan scriptin exploitlerine bakmak aklıma gelmedi.
+Ertesi gün biraz daha kurcaladım fakat syntax hatasından ileri gidemedim. Daha sonra bekir abi biraz kurcaladı ve XXE olduğunu söyledi.<br><br>
+Büyük uğraşlar sonucu win.ini dosyasını okumayı başardık. Daha sonra mevzu OOB ye gider mi diye test ederken yaklaşık yarım saat kadar paypalın makineyi yanlışlıkla kapattık (vallahi yanlışlıkla , payload deniyoduk).
+  
+<br><br>
+<a href = "https://resimag.com/p1/ae6c944ad9d.png"><img src = "https://resimag.com/p1/ae6c944ad9d.png" style = "width:566px"></a>
+
+<br><br>
+Daha sonra payloadlarla sslerle birlikte paypala yolladım 3 kere ard arda daha fazla detay verin dediler. 3 kere detaylı yolladım duplicate olduğuna dair bir rapora eklediler hesabımı. Ardından tekrar detay istediler. Bug işlerine
+çok takılmadığımdan mı bilmiyorum fakat bana bu durum garip geldi. "madem duplicate detaylarını ilk mesajda yazdım direk o zaman duplicate atsaydınız ya. paramız yok desenize lan şer..." diye içimden kalayı bastım ve hackeroneyi kapattım.
+<br><br>
+Denediğimiz payloadların listesine de <a href = "https://ahmeth4n.github.io/payloads.txt">şu</a> adresten ulaşabilirsiniz.<br><br>
+O gece Murat abi ile birkaç makale bulmuştuk zafiyet ile alakalı. Onları da aşağıya bırakayım , bizzat açığı bulanından da dinleyin hikayeyi birde.<br><br>
+<a href = "https://sploitus.com/exploit?id=PACKETSTORM:153722">https://sploitus.com/exploit?id=PACKETSTORM:153722</a><br>
+<br>
+<a href = "https://webcache.googleusercontent.com/search?q=cache:zdMLCuvRPD0J:https://zero.lol/2019-07-21-axway-securetransport-xml-injection/+&cd=1&hl=tr&ct=clnk&gl=tr">https://webcache.googleusercontent.com/search?q=cache:zdMLCuvRPD0J:https://zero.lol/2019-07-21-axway-securetransport-xml-injection/+&cd=1&hl=tr&ct=clnk&gl=tr
+</a><br><br>
+Makalede adam zafiyetin bir kere istismarından sonra WAF devreye girdiğini ve zafiyetin istismarının zorlaştığını belirtiyor. Bende bunu 40 yerden refere ederek paypala göstermeye çalıştım fakat nafile bir çaba oldu.
+<br><br>
+Uzun lafın kısası siz siz olun bir zafiyet bulduğunuzda video almayı kesinlikle unutmayın. Burdaki başlıca hata açığın ilk istismarı esnasında videoya alamamam oldu , daha sonrasında da lafla derdimi anlatamadım. <br><br>Benden bu kadar. Başka bir yazıda görüşmek üzere , hoşçakalın!
+
+</p>  
+</div>
+     <br><br>
+          </center>
+      </body>
+    </html>
+    
