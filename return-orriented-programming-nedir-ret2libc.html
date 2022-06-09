@@ -1,0 +1,238 @@
+<style>
+    body {
+        font-family: 'Roboto';font-size: 17px;
+    }
+	.gist{
+		width:80% !important;
+		text-align:center !important;
+		margin:auto;
+	}
+    </style>
+    
+    <html>
+      <head>
+      <meta charset="UTF-8">
+      <meta name="description" content="ROP (Return Orriented Programming) Nedir? Ret2Libc Example ">
+      <meta name="keywords" content="what is rop, return orriented programming nedir, rop nedir, ret2libc example">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	  <meta name="twitter:card" content="ROP (Return Orriented Programming) Nedir? Ret2Libc Example">
+	<meta name="twitter:title" content="ROP (Return Orriented Programming) Nedir? Ret2Libc Example">
+	<meta name="twitter:description" content="ROP (Return Orriented Programming) Nedir? Ret2Libc Example">
+	<meta name="twitter:image" content="https://i.ytimg.com/vi/zRI8diZTEB0/maxresdefault.jpg">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+	
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+        <title>ROP (Return Orriented Programming) Nedir? biraz ROP biraz stack..</title>
+      </head>
+      <body>
+    <div class="row" style="width:100% !important;margin-left:0px !important;margin-right:0px !important;">
+	<div class="col-md-12 text-center">
+        <img src = "https://upload.wikimedia.org/wikipedia/en/5/55/Bsd_daemon.jpg">
+        <br>
+        <p>Selamlar. Normalde blogu komple ingilizce olarak devam ettirme kararı almış olsam da bazı konuları Türkçe devam ettireceğim.<br>
+        Bugün biraz ROP nedir, ROP gadgetlar ne işe yarar bunlara değineceğiz ve örnek bir <strong>ret2libc</strong> atak senaryosu göstereceğiz.  Fazla oyalanmadan başlayalım!
+        </p>
+        
+        <br>
+          <h1>Nedir bu ROP?</h1>
+          <div style="width:100%;margin-top:10px;margin-bottom:20px;"></div>
+          Yazıya başlamadan önce lab ortamının stabil çalışması için ASLR (Address Space Layout Randomization) güvenlik önlemini devre dışı bırakmamız gerekiyor.<br><br>
+
+          <code>
+    
+            <strong>Linux:</strong><br>
+            echo 0 > /proc/sys/kernel/randomize_va_space
+             <br><br>
+             <strong>Windows:</strong><br>
+             [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management]<br>
+             MoveImages=dword:00000000
+            </code>
+            <div style="width:100%;margin-top:10px;margin-bottom:20px;"></div>
+            <img src="https://rafaelchen.files.wordpress.com/2017/11/screen-shot-2017-11-21-at-23-57-01.png?w=229&h=423" class="img-fluid">
+          <div style="width:100%;margin-top:10px;margin-bottom:20px;"></div>
+          <p>
+            Buffer overflow, temelde programın bellekte kendine ayrılmış veri alanına, alması gerekenden daha fazla miktarda veri girişi olması durumunda programın kendine ayrılmış bellek alanından taşması ve bu taşmayı kullanarak kod çalıştırmaya yol açan bir zafiyettir.
+            <br>Fakat bu senaryo her zaman anlatıldığı kadar kolay gerçekleşmeyebiliyor. Çünkü buffer overflow zafiyetlerini önlemek amacıyla geliştirilmiş bir takım güvenlik önlemlerimiz var. 
+            <br>Bu yazıda üstünde duracağımız ve önemli güvenlik önlemlerinden biri de bir çoğunuzun <strong>DEP(Data Execution Protection)</strong> olarak da bildiği <strong>NX (Non-executable) stack.</strong>  <br><br>
+            Bu güvenlik önleminin temel prensibi programa ayrılmış olan data segmentlerini non-executable yani yürütülemez olarak işaretleyip ve bu alanlara müdahaleyi engellemesidir. <br>
+            Dolayısıyla siz bir buffer overflow zafiyeti bulsanız bile programınızın veri alanı non-executable işaretlendiği için dışarıdan kod enjekte edemiyor/ exploitation yapamıyorsunuz.<br><br>
+            Tam bu noktada da <strong>ROP</strong> devreye giriyor!<br><br>
+            <img src="https://www.cs.rochester.edu/u/sandhya/csc252/assignments/A3/rop.png" class="img-fluid">
+
+		<div style="width:100%;margin-top:10px;margin-bottom:20px;"></div>
+
+        ROP (Return Orriented Programming), DEP ve benzeri korumaları aşmak için kullanılan yaygın tekniklerden biridir. <br>
+
+        <br>Bu teknikte stacke dışarıdan herhangi bir kod enjekte edilmeden programın içerisindeki library/fonksiyonlar üzerinden işlem gerçekleştirildiği için bu yöntem DEP korumasına <strong> takılmaz.</strong><br>
+        İstismar aşamasında programa dahil edilmiş libraryler ve fonksiyonlar yardımı ile bir <strong>ROP chain</strong> oluşturarak exploitation işlemi gerçekleştirilir. 
+        <br>
+        
+        <br>Bu tekniği anlayabilmemiz için <strong>ret</strong> instructionunu anlamamız gerekiyor. <br>
+        Çünkü ROP gadgetler genellikle <strong>ret</strong> komutu ile biter. Laba geçmeden basitçe <strong>ret</strong> instructionun nasıl çalıştığından çok kısa bahsedeceğim. <br><br>
+        - ret instructionunun açılımı <strong>Return from Procedure</strong>'dir.<br>
+        - Stackte en üstte yazan değeri EIP(Instruction Pointer)'e yazar.<br>
+        - Program yazılan adresten yürütülmeye devam edilir. <br><br>
+        <strong>Örnek:</strong>
+
+		<div style="width:100%;margin-top:10px;margin-bottom:20px;"></div>
+
+        <code>
+            push 0x12345678  &emsp;  # Stacke 0x12345678 değerini push eder.
+            <div style="width:100%;margin-top:1px;margin-bottom:1px;"></div>
+            ret      &emsp;               # Stackte en üstte yazan (0x12345678) değerini EIP'e set eder ve program bu adresten yürütülmeye devam eder.
+        </code>
+        <div style="width:100%;margin-top:10px;margin-bottom:20px;"></div>
+
+        bu bilgiyi yazının ilerleyen vakitlerinde ve binary exploitation ile uğraşırken sıkça kullanacağız. Aklımızın bir köşesinde dursun. Şimdi lab üzerinden devam edelim.
+        <div style="width:100%;margin-top:10px;margin-bottom:20px;"></div>
+        <img class="img-fluid" src="rop-img/rop-1.png">
+        <div style="width:100%;margin-top:10px;margin-bottom:20px;"></div>
+
+        Basit bir C kodumuz var. Bu kodda hiç çağrılmamış bir rop() fonksiyonu ve değişkene 100 bytelik yer ayırıp argv[1] den aldığı veriyi değişkenin içine strcpy fonksiyonu ile kopyalayan runner_func fonksiyonumuz var.
+        <div style="width:100%;margin-top:10px;margin-bottom:10;"></div>
+        Kodumuzu derliyor ve gdb'ye atıyoruz. Ben bu yazı boyunca gdb-peda kullanacağım. Labı tekrardan uygulayacak arkadaşlar < <a href="https://github.com/longld/peda">https://github.com/longld/peda</a> > bu adresten kurulum yapabilirler.
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        <code>
+            gcc -m32 -fno-stack-protector -z execstack rop.c -o rop
+        </code>
+
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        <img class="img-fluid" src="rop-img/rop-8.png">
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        Programımızı çalıştırıp <code>b main</code> ile main fonksiyonuna breakpoint attıktan sonra <code>p rop</code> komutu ile rop() fonksiyonumuzun adresini kontrol ediyoruz (0x565561ad).<br><br>
+        Atak senaryosuna geçmeden önce mantığı anlamak adına basit bir örnek yapıp rop fonksiyonunu çalıştıracak ve sonrasında exit edecek basit bir ROP chain hazırlayalım.<br>
+         
+        Test amaçlı 200 karakterlik bir payload göndererek stackimizin durumuna bakalım ;
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        <img class="img-fluid" src="rop-img/rop-5.png">
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        <i>(Payload oluşturmak - yardımcı araçları kullanmak için <a href = "https://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/">https://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/</a> adresini kullanabilirsiniz.)</i>
+        <br><br>
+        Taşma işlemimizi başarıyla gerçekleştirdik. Şimdi exploit işlemini sağlıklı gerçekleştirmek için kaç byteden sonrasının EIP'e yazıldığını yani kaç karakterlik bir payload göndermemiz gerektiğini kontrol edelim;
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        <img class="img-fluid" src="rop-img/rop-6.png">
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+        112 sonucunu aldık. Yani 112 byte'dan sonra yazdığımız her şey EIP'e (instruction pointerimize) etki edecek. <br>
+        <code>p exit</code> diyerek exit komutumuzun da adresini alalım.
+        
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        <img class="img-fluid" src="rop-img/rop-10.png">
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        Payloadımızı oluştururken programın crash vermeden işlemleri sırasıyla yapması için şu şekilde bir ROP chain oluşturacağız;
+        <br>
+        <code>112 * A + rop() address + exit address</code>
+        <br>
+        yani
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        <code>./rop "$(python2 -c 'print "A"*112 + "\xad\x61\x55\x56" + "\xc0\x71\xdb\xf7"')"</code>
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        <img class="img-fluid" src="rop-img/rop-9.png">
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        Gördüğünüz gibi programda bulunan fakat çağrılmamış bir fonksiyonu çağırmayı başardık.<br> 
+        Bu basit örnekte işin detayına inmedim. Bu basit örnek ile altta işleyeceğimiz senaryo birleştiğinde daha detaylandırarak herşeyi anlaşır kılacağız. <br><br>Şimdi bu senaryoyu bir tık daha ileri taşıyalım ve Ret2libc atak senaryosu örneği yapıp biraz daha işin derinlerine inelim.
+        <br><br>
+        Programımızı tekrardan gdb'ye atıyoruz.
+
+
+
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        <img class="img-fluid" src="rop-img/rop-2.png">
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+        
+        <code>b main</code> komutunu kullanarak main fonksiyonumuza breakpoint atıyor ve programımızı başlatıyoruz. Atak senaryomuza başlamadan önce programa dahil edilmiş libraryleri <code>ldd</code> aracılığı ile kontrol edelim.
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        <img class="img-fluid" src="rop-img/rop-2.1.png">
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        Resimde gördüğümüz gibi standart libraryimiz olan libc programımıza include edilmiş gözüküyor. Atak senaryomuzu gerçekleştirmek / shell alabilmemiz için bu kütüphaneyi kullanacağız.
+        <br>Programımız breakpoint bıraktığımız yerde durduktan sonra system, exit ve libc kütüphanemiz içinde shell almamıza yarayacak olan "/bin/sh" adresini ve programdaki çağrıların adreslerini kontrol ediyoruz.
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        <img class="img-fluid" src="rop-img/rop-3.1.png">
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        Kütüphanemizle alakalı bilgileri, ilgili adreslerimizi edindik. Bir önceki örnekten ne kadar uzunlukta bir payload göndermemiz gerektiğini ve EIP adresini bildiğimiz için bu işlemleri tekrarlamıyorum.<br>
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+        <br>Bir önceki örnekten sonra bu örnekte kafanızda bir şeyler şekillenmiş olacaktır muhtemelen. 
+        <br>Normal buffer overflow zafiyetlerinde EIP'yi taşıracak uzunlukta payload gönderilir ve EIP'ye etki edecek kısıma shellcode enjekte edilir.<br>
+        Fakat şuan elimizdeki program NX korumalı olduğu için böyle bir şansımız yok. Bu yüzden <strong>Ret2libc</strong> atağında bu durumdan farklı olarak dışarıdan bir shellcode enjekte etmeden <strong>programın içerisindeki</strong> kütüphaneler / fonksiyonlar yardımı ile bu işlemleri gerçekleştireceğiz.<br>
+        Dolayısıyla herhangi bir <strong>DEP</strong> önlemine takılmadan senaryomuzu tamamlayabileceğiz.<br><br>
+        find komutu ile kontrol ettiğimiz libc kütüphanesindeki <strong>/bin/sh</strong> 'nin adresini bu noktada kullanacağız. <br>
+        
+        Oluşturacağımız ROP chain aşağıdaki gibi olacak;<br><br>
+
+        <code>JUNK (108 * A padding) + BBBB (4 byte EBP padding) + <strong>"system"</strong> call + <strong>"exit"</strong> call + address of "/bin/sh" we found in <strong>libc</strong></code>
+        <br><i>(exit çağrısını neden yaptığımızı aşağıda anlatacağım.)</i>
+        <br><br>
+
+        Payloadımızı tekrardan şekillendiriyoruz;<br><br>
+
+        <code>
+            ./rop `python2 -c 'print "A"*112 + "\xb0\x4c\xdc\xf7" + "\xc0\x71\xdb\xf7" +"\xf5\x60\xf3\xf7"'`<!--<br>
+            ./rop `python2 -c 'print "A"*112 + "\xb0\x4c\xdc\xf7" + "\x22\x60\x55\x56"  +"\xf5\x60\xf3\xf7"'`-->
+        </code>
+        <br><br>
+        ROP zincirimizi oluşturduk. (108 byte * A JUNK + 4 byte EBP space + system addr. + exit addr. + /bin/sh) <br>
+
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        <img class="img-fluid" src="rop-img/rop-7.png">
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        g0t shell! Dışarıdan herhangi bir shellcode göndermeden sadece programın kendi içindeki kütüphanelerini kullanarak shell aldık. Biraz detaylandırmak gerekirse;<br>
+        Yukarıda 200 karakterlik bir payload gönderdikten sonra EIP adresimize 112 karakterden sonra yazabildiğimiz bilgisini aldık. 112 karakterden sonra yazdığımız şeyler programın ilerleyişini belirleyecek.<br>
+        <br>Yukarıdaki ROP zincirimizde dönüş adresimizi system fonksiyonunun çağrı adresine yönlendirdiğimizde ESP değerimiz 4 bayt artacaktır. <br>
+        ROP chainlerde dikkat edilmesi gereken en önemli husus ROP gadgetlerinin zincirde doğru yerlerde olmasıdır.<br>
+        İşlemci anatomisi gereği her veri stackte little-endian yapıda tutulduğu için system fonksiyonu çağrısını 112 karakter padding payloadımızdan sonra yazdık.<br> 
+        Yukarıda system çağrısından sonra exit vermek yerine rastgele <strong>4 byte junk bir değer</strong> yazmış olsaydık <strong>ne olurdu?</strong> Deneyip görelim.
+        
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+        <img class="img-fluid" src="rop-img/rop-14.png">
+        <div style="width:100%;margin-top:10px;margin-bottom:20px;"></div>
+
+
+        İşte <strong>exit</strong> çağrısı burada ufak ama güzel bir önlem taşıyor. 
+        
+        <br><br>Eğer exit adresi yerine 4 byte herhangi bir karakter yazsaydık programımız yine bize shell verecekti.<br>
+        Fakat shellden çıktığımızda program <strong>crash</strong> verecekti. Sağlıklı bir dönüş olması için crash vermesini önlemek adına <strong>exit</strong> adresimizi kullanarak programımızdan crash vermeden çıkışımızı sağladık.<br>
+        Yukarıda anlattığımız çağrı adrese yönlendirilip yürütme tamamlandığında ESP değerimiz 4 bayt artacaktır. <br>
+        Dolayısıyla bufferimiz bu adresi başka bir dönüş adresi olarak değerlendirilecektir.<br> /bin/sh ' yı rop chainimizde doğru konumlandırmak için bu dönüş adresinden 4 byte sonrasına system fonksiyonumuzun argümanı olan /bin/sh adresini vermemiz gerekiyordu.<br><br>
+
+        Ve düzgün bir ROP zinciri ile basit bir Ret2Libc atağı! Başka bir yazıda görüşmek üzere.
+        <div style="width:100%;margin-top:20px;margin-bottom:20px;"></div>
+
+        ROP gadgetlerinin gerçek bir sistem üzerinde nasıl kullanıldığını görmek isterseniz geçtiğimiz aylarda çıkan WatchGuard Firebox ürününde çıkmış RCE zafiyetinin teknik analizini
+        aşağıdaki linkten inceleyebilirsiniz. <br>İncelemenizi tavsiye ederim
+        <br><br>
+        <a href="https://blog.assetnote.io/2022/04/13/watchguard-firebox-rce/">Diving Deeper into WatchGuard Pre-Auth RCE - CVE-2022-26318        </a>
+        <br><br>
+
+        <h3>Kaynakça:</h3>
+        <a href="https://codearcana.com/posts/2013/05/28/introduction-to-return-oriented-programming-rop.html">Introduction to return oriented programming (ROP)</a><br>
+        <a href="https://ocw.cs.pub.ro/courses/cns/labs/lab-08">Lab 08 - Return-Oriented Programming</a>
+        
+        
+    </p>
+    <br><br>
+
+</div>
+
+</div>
+     <br><br>
+	 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      </body>
+    </html>
