@@ -169,7 +169,13 @@
         <br>Bir önceki örnekten sonra bu örnekte kafanızda bir şeyler şekillenmiş olacaktır muhtemelen. 
         <br>Normal buffer overflow zafiyetlerinde EIP'yi taşıracak uzunlukta payload gönderilir ve EIP'ye etki edecek kısıma shellcode enjekte edilir.<br>
         Fakat şuan elimizdeki program NX korumalı olduğu için böyle bir şansımız yok. Bu yüzden <strong>Ret2libc</strong> atağında bu durumdan farklı olarak dışarıdan bir shellcode enjekte etmeden <strong>programın içerisindeki</strong> kütüphaneler / fonksiyonlar yardımı ile bu işlemleri gerçekleştireceğiz.<br>
-        Dolayısıyla herhangi bir <strong>DEP</strong> önlemine takılmadan senaryomuzu tamamlayabileceğiz.<br><br>
+        Dolayısıyla herhangi bir <strong>DEP</strong> önlemine takılmadan senaryomuzu tamamlayabileceğiz.<br><br><br>
+	
+	<div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+        <img class="img-fluid" src="https://www.researchgate.net/profile/Milind-Chabbi/publication/280155855/figure/fig5/AS:668517867212801@1536398488533/Shell-code-with-return-oriented-programming_Q320.jpg">
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+
+	    
         find komutu ile kontrol ettiğimiz libc kütüphanesindeki <strong>/bin/sh</strong> 'nin adresini bu noktada kullanacağız. <br>
         
         Oluşturacağımız ROP chain aşağıdaki gibi olacak;<br><br>
@@ -195,6 +201,11 @@
         g0t shell! Dışarıdan herhangi bir shellcode göndermeden sadece programın kendi içindeki kütüphanelerini kullanarak shell aldık. Biraz detaylandırmak gerekirse;<br>
         Yukarıda 200 karakterlik bir payload gönderdikten sonra EIP adresimize 112 karakterden sonra yazabildiğimiz bilgisini aldık. 112 karakterden sonra yazdığımız şeyler programın ilerleyişini belirleyecek.<br>
         <br>Yukarıdaki ROP zincirimizde dönüş adresimizi system fonksiyonunun çağrı adresine yönlendirdiğimizde ESP değerimiz 4 bayt artacaktır. <br>
+	    
+	<div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+        <img class="img-fluid" src="https://rioasmara.files.wordpress.com/2021/11/an-rop-attack-example.jpg?w=640">
+        <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
+	 
         ROP chainlerde dikkat edilmesi gereken en önemli husus ROP gadgetlerinin zincirde doğru yerlerde olmasıdır.<br>
         İşlemci anatomisi gereği her veri stackte little-endian yapıda tutulduğu için system fonksiyonu çağrısını 112 karakter padding payloadımızdan sonra yazdık.<br> 
         Yukarıda system çağrısından sonra exit vermek yerine rastgele <strong>4 byte junk bir değer</strong> yazmış olsaydık <strong>ne olurdu?</strong> Deneyip görelim.
