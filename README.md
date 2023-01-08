@@ -1,5 +1,5 @@
 Ahmethan GULTEKIN kisisel blog.
 
 contact;
-ahmethangfx@gmail.com
-twitter.com/inject0r16
+ahmeth4n@gmail.com
+twitter.com/ahmeth4n_
