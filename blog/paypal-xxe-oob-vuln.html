@@ -13,14 +13,14 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
         <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-        <title>Ahmethan Gultekin / 90 kg developer!</title>
+        <title>Ahmethan Gultekin - PayPal XML External Entity Vulnerability</title>
       </head>
       <body>
        <center>
     <div style="width:566px;">
         <img src = "https://upload.wikimedia.org/wikipedia/en/5/55/Bsd_daemon.jpg">
         <br>
-          <h1>Paypal XXE & OOB Vulnerability</h1>
+          <h1>Paypal XXE & OOB Vulnerability (2019)</h1>
 <p>
 Selamlar. Uzun zamandır blog yazmaya fırsat bulamıyordum , can sıkıntısına kasmış olduğum yerden 3-5 bişey çıkınca
 blog bi hava alsın diye girdim bişeyler karalamaya. O kadar uzun zamandır yazmıyorum ki en son yazdığımda 90 kiloymuşum (sayfa titlesinden de belli) şuan 83'üm. Neyse.<br>
@@ -31,11 +31,11 @@ O zaman lets go!
 <h1>Oynat Gelsin :</h1><br><br>
 Subdomainlere bakarken bir subdomainde login forma denk geldim. Önce rastgele bir data yollayıp ne tepki vereceğine baktım.
 <br><br>
-<a href = "https://ahmeth4n.github.io/paypal1.png"><img src = "https://ahmeth4n.github.io/paypal1.png" style = "width:566px"></a>
+<a href = "https://ahmeth4n.github.io/img/paypal1.png"><img src = "https://ahmeth4n.github.io/img/paypal1.png" style = "width:566px"></a>
 <br><br>
 Daha sonra adettendir diyerek tırnak atarak , payloadlar deneyerek burpte biraz datayı kurcaladım ve bir syntax hatası aldım.<br>
 <br><br>
-<a href = "https://ahmeth4n.github.io/paypal2.jpg"><img src = "https://ahmeth4n.github.io/paypal2.jpg" style = "width:566px"></a>
+<a href = "https://ahmeth4n.github.io/img/paypal2.jpg"><img src = "https://ahmeth4n.github.io/img/paypal2.jpg" style = "width:566px"></a>
 
 <br><br>
 Hatayı buraya da bırakayım;
@@ -53,13 +53,13 @@ Ertesi gün biraz daha kurcaladım fakat syntax hatasından ileri gidemedim. Az 
 Büyük uğraşlar sonucu win.ini dosyasını okumayı başardık. Daha sonra mevzu OOB ye gider mi diye test ederken yaklaşık yarım saat kadar paypalın makineyi yanlışlıkla kapattık (vallahi yanlışlıkla , payload deniyoduk).
   
 <br><br>
-<a href = "https://ahmeth4n.github.io/paypal3.png"><img src = "https://ahmeth4n.github.io/paypal3.png" style = "width:566px"></a>
+<a href = "https://ahmeth4n.github.io/img/paypal3.png"><img src = "https://ahmeth4n.github.io/img/paypal3.png" style = "width:566px"></a>
 
 <br><br>
 Daha sonra payloadlarla sslerle birlikte paypala yolladım 3 kere ard arda daha fazla detay verin dediler. 3 kere detaylı yolladım duplicate olduğuna dair bir rapora eklediler hesabımı. Ardından tekrar detay istediler. Bug işlerine
 çok takılmadığımdan mı bilmiyorum fakat bana bu durum garip geldi. "madem duplicate detaylarını ilk mesajda yazdım direk o zaman duplicate atsaydınız ya. paramız yok desenize lan şer..." diye içimden kalayı bastım ve hackeroneyi kapattım.
 <br><br>
-Denediğimiz payloadların listesine de <a href = "https://ahmeth4n.github.io/payloads.txt">şu</a> adresten ulaşabilirsiniz.<br><br>
+Denediğimiz payloadların listesine de <a href = "https://ahmeth4n.github.io/materials/paypal-xxe/payloads.txt">şu</a> adresten ulaşabilirsiniz.<br><br>
 Zafiyetin bir kere istismarından sonra WAF devreye giriyormuş ve waf devreye girdiğinde requestin gittiği sayfa 400 döndüğü için exploit işlemi gerçekleşmiyordu. Bende bunu 40 yerden refere ederek paypala göstermeye çalıştım fakat nafile bir çaba oldu.
 <br><br>
 Uzun lafın kısası siz siz olun bir zafiyet bulduğunuzda video almayı kesinlikle unutmayın. Burdaki başlıca hata açığın ilk istismarı esnasında videoya alamamam oldu , daha sonrasında da lafla derdimi anlatamadım. <br><br>Benden bu kadar. Başka bir yazıda görüşmek üzere , hoşçakalın!

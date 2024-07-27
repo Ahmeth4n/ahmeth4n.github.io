@@ -1,0 +1,171 @@
+<style>
+    body {
+        font-family: 'Roboto';font-size: 17px;
+    }
+	.code-text{
+		font-size: 87.5%;
+		color: #e83e8c;
+		word-wrap: break-word;
+	}
+	.dark-body{
+		background:#000 !important;
+		color:#FFF !important;
+	}
+		
+    </style>
+    
+    <html>
+      <head>
+      <meta charset="UTF-8">
+      <meta name="description" content="[Android] Native Library Cracking / Module Hooking / TikTok SSL Unpinning ">
+      <meta name="keywords" content="spotify, spotify ssl pinning bypass, spotify frida script, spotify request hook">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	  <meta name="twitter:card" content="[Android] Native Library Cracking / Module Hooking / TikTok SSL Unpinning"><!-- required -->
+	<meta name="twitter:title" content="[Android] Native Library Cracking / Module Hooking / TikTok SSL Unpinning"><!-- required -->
+	<meta name="twitter:description" content="[Android] Native Library Cracking / Module Hooking / TikTok SSL Unpinning ..."><!-- optional -->
+	<meta name="twitter:image" content="https://codeshare.frida.re/static/images/logo.png"><!-- optional -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" rel="stylesheet">
+	
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+        <title>Ahmethan Gultekin - Native Library Hooking & Tiktok SSL Bypass</title>
+      </head>
+      <body>
+    <div class="row" style="width:100% !important;margin-left:0px !important;margin-right:0px !important;">
+	<div class="col-md-12 text-center">
+        <a href="https://ahmeth4n.github.io/"><img src = "https://upload.wikimedia.org/wikipedia/en/5/55/Bsd_daemon.jpg"></a><br>
+		<span id="changeMode" style="color: #e83e8c;">(click and switch site mode)</span>
+
+		<br>
+        <br>
+          <h1>[Android] what is this "native library"? <br>native library hooking / TikTok SSL Unpinning</h1>
+		<br>
+		<img class="img-fluid" src = "https://source.android.com/static/docs/core/config/images/namespace-libraries.png">
+		<br><br>
+		We can use libraries written in C/C++ languages with the help of JNI in our Android applications. Although not often used in simple market applications, many large applications require external JNI libraries.<br>
+		With the help of the Android NDK, we can develop libraries for our applications written in C/C++ other than Java.
+		<br>
+		JNI libraries end with <strong>".so"</strong> and are usually located in the <strong>"lib"</strong> folder in the "data" folder of our application (I will talk about exceptions in the article).
+		<br><br>
+		<a href="https://ahmeth4n.github.io/img/find_libs.PNG" data-toggle="lightbox">
+			<img class="img-fluid" src="https://ahmeth4n.github.io/img/find_libs.PNG" style="width:300px;">
+		</a>
+		<br><br>
+		I targeted application <strong>TikTok</strong> (but i still hate this app) and targeted bypass <strong>SSL pinning</strong>. I will all details for native libraries explain  on this app.<br>
+		When I go to the data directory of my application and list the files, as you can see in the picture, our lib folder welcomes us. <br>Here, showing another directory with an arrow next to the lib folder indicates that a <strong>symlink</strong> has been made to that directory. So our actual directory is actually the directory specified there.
+		<br><br>
+		Let's list the "lib" folder.<br><br>
+		<a href="img/list_libs.PNG" data-toggle="lightbox">
+				<img class="img-fluid" src="https://ahmeth4n.github.io/img/list_libs.PNG" style="width:300px;">
+         </a>
+		<br><br>
+		As you see we have too many .so files (native libraries). So, we was targeted SSL pinning bypass. So first we need to find the right library (.so file).<br>
+		For this have too many methods but i explain my finding methods.<br><br>
+		We are searching SSL pinning libraries. I always starting search some string in lib folder. This strings contains SSL function names. 
+		<br>When some libraries are searched on google, we come across many results about what they do. But if libraries are special coding you're not find google or anyplace.<br>
+		so i think most clearly method is string search method. let's search SSL library.<br><br>
+		<a href="img/ssl_lib.PNG" data-toggle="lightbox">
+				<img class="img-fluid" src="https://ahmeth4n.github.io/img/ssl_lib.PNG" >
+         </a>
+		<br><br>
+		We came up with a few results. ffmpeg and crypto are not the libraries we're looking for. After removing the libraries that are not useful to us, we have 2-3 libraries left.<br> 
+		I searched library names on google and i saw some guys cracked <strong>"libsscronet.so"</strong> before me. but cracked library version is too old version. so I priority on <strong>"libsscronet.so"</strong>. <br>
+		We are analysed remaining libraries on ghidra.<br><br>
+		
+		<a href="img/ssl_lib.PNG" data-toggle="lightbox">
+				<img class="img-fluid" src="https://ahmeth4n.github.io/img/tiktok_ssl.PNG" style="width:300px;">
+         </a>
+		 
+		 <br><br>
+		 After ghidra finished decompile process we are searched potential target functions.<br>
+		 I searched <strong>SSL</strong> prefix and  i saw library have too many ssl functions. if we want to bypass ssl pinning, we change certificate verify flow. <br><br>
+		 We have <span class="code-text">2 options </span> to find the right block. 
+		 <br><br>
+		 <strong>Firstly,</strong> we search certificate error message and find code block run when the certificate <strong>doesnt match</strong> my proxy certificate. 
+		<br><strong>Secondly,</strong> we search <strong>ssl function names </strong>on ssl verify block. Because library needed this functions for validate my certificate. <br>
+		<br>I prefer second method for this application. Because i was search ssl prefix and i saw <span class="code-text">SSL_CTX_set_custom_verify</span> function. <br><br>
+		If we take a closer look at this function, you will understand why I chose this method.
+		<br><br>
+				 <a  style="text-align:center;" href="img/ssl_verify3.PNG" data-toggle="lightbox">
+						<img style="width:300px;" class="img-fluid" src="https://ahmeth4n.github.io/img/ssl_verify3.PNG" >
+				 </a>
+				 <a style="text-align:center;" href="img/certificate.PNG" data-toggle="lightbox">
+						<img style="width:300px;" class="img-fluid" src="https://ahmeth4n.github.io/img/certificate.PNG" >
+				 </a>
+		<br><br>
+		This function is under certificate verification in the official documentation. I think we found true function! <br>We should examine a little more.<br><br>
+		After a long search on the internet, I found a small script and edited it myself. This little script helps us to list the functions we want for our target library. <br><br>Let's run it and see.
+		<br><br>
+		<a href="img/list_modules.PNG" data-toggle="lightbox">
+				<img  class="img-fluid" src="https://ahmeth4n.github.io/img/list_modules.PNG" >
+		</a><br>
+		You can access the script here; <a href="https://github.com/Ahmeth4n/android-frida-script-archive/blob/main/list_library_modules.js">https://github.com/Ahmeth4n/android-frida-script-archive/blob/main/list_library_modules.js</a>
+
+		<br><br>
+		Result:<br>
+		<a href="img/hook_funcs.PNG" data-toggle="lightbox">
+				<img style="width:40%;" class="img-fluid" src="https://ahmeth4n.github.io/img/hook_funcs.PNG" >
+		</a>
+		
+		<br><br>
+		Instead of using this script, we could also trace with the jnitrace (<a href="https://github.com/chame1eon/jnitrace">https://github.com/chame1eon/jnitrace</a>) tool. <br>
+		Let's trace and see the result;<br><br>
+		<a href="img/jnitrace.PNG" data-toggle="lightbox">
+				<img style="width:40%;" class="img-fluid" src="https://ahmeth4n.github.io/img/jnitrace.PNG" >
+		</a>
+		<br><br>
+		I think we're pretty sure we're in the right place now. Let's go back to <strong>Ghidra</strong> and examine it in more detail.
+		<br><br>
+		<a href="img/tiktok.PNG" data-toggle="lightbox">
+				<img style="width:60%;" class="img-thumbnail" src="https://ahmeth4n.github.io/img/tiktok.PNG" >
+		</a>
+		<br>This method have 3 parameters. <br><br>
+		<strong>First parameter</strong> is <span class="code-text">client_ctx.get()</span> client context variable.<br>
+		<strong>Second parameter</strong> is <span class="code-text">SSL_VERIFY_PEER</span> it is the parameter that provides the certificate control and does not perform the connection if it is invalid.<br>
+		<strong>Last parameter</strong> is <span class="code-text">&UNK(bla bla bla)</span>, callback address.
+		
+		<br><br>Finally, I open the library in IDA to view it in detail. (no reason, I like it :X)
+		<br>Find same function and press F5 show pseudo code.<br><br>
+		
+		<a href="img/detail_psuedo.PNG" data-toggle="lightbox">
+			<img style="width:60%;" class="img-thumbnail" src="https://ahmeth4n.github.io/img/detail_psuedo.PNG" >
+		</a>
+		<br><br>
+		If you want to review the original document, you can get detailed information by searching <br> <span class="code-text">verify cert function </span>on the page at <a href="https://boringssl.googlesource.com/boringssl/+/master/ssl/ssl_test.cc" >https://boringssl.googlesource.com/boringssl/+/master/ssl/ssl_test.cc</a>.
+		<br><br> this code block is <span class="code-text">"gamechanger"</span>. because all operations will proceed according to the value to be returned here.<br><br>
+		If this method returns 1, we cannot block application traffic. We need to set the operation of this block to work in reverse. <br>The function must end with <span class="code-text">return 0;</span><br><br>
+		When we view this part from the hex editor, we change the value of <span class="code-text">01 20</span>, which corresponds to the value of 1, to <span class="code-text">00 20</span> (if it does not work, 00 00). <br>And the result:
+		<br><br>
+		<a href="img/tiktok3.PNG" data-toggle="lightbox">
+			<img style="width:60%;" class="img-thumbnail" src="https://ahmeth4n.github.io/img/changed_hex.PNG" >
+		</a>
+		<br><br>now function return 0 and the <span class="code-text">game over..</span><br><br>
+		it was a long post. Since I had to take breaks while writing, I hope there was not a part that I missed or explained wrong. <br><br>
+		See you.
+		
+		
+</div>	
+</div>
+     <br><br>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+                    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js"></script>
+    <script>
+	$(document).on('click', '[data-toggle="lightbox"]', function(event) {
+                event.preventDefault();
+                $(this).ekkoLightbox();
+            });
+			
+	$("#changeMode").click(function(e){
+	if($("body").hasClass("dark-body")){
+		$("body").removeClass("dark-body");
+	}else{
+		$("body").addClass("dark-body");
+	}
+		
+	
+	});
+	</script>
+	</body>
+    </html>

@@ -85,7 +85,7 @@
 
         bu bilgiyi yazının ilerleyen vakitlerinde ve binary exploitation ile uğraşırken sıkça kullanacağız. Aklımızın bir köşesinde dursun. Şimdi lab üzerinden devam edelim.
         <div style="width:100%;margin-top:10px;margin-bottom:20px;"></div>
-        <img class="img-fluid" src="rop-img/rop-1.png">
+        <img class="img-fluid" src="img/rop-img/rop-1.png">
         <div style="width:100%;margin-top:10px;margin-bottom:20px;"></div>
 
         Basit bir C kodumuz var. Bu kodda hiç çağrılmamış bir rop() fonksiyonu ve değişkene 100 bytelik yer ayırıp argv[1] den aldığı veriyi değişkenin içine strcpy fonksiyonu ile kopyalayan runner_func fonksiyonumuz var.
@@ -99,7 +99,7 @@
 
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
-        <img class="img-fluid" src="rop-img/rop-8.png">
+        <img class="img-fluid" src="img/rop-img/rop-8.png">
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
         Programımızı çalıştırıp <code>b main</code> ile main fonksiyonuna breakpoint attıktan sonra <code>p rop</code> komutu ile rop() fonksiyonumuzun adresini kontrol ediyoruz (0x565561ad).<br><br>
@@ -108,7 +108,7 @@
         Test amaçlı 200 karakterlik bir payload göndererek stackimizin durumuna bakalım ;
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
-        <img class="img-fluid" src="rop-img/rop-5.png">
+        <img class="img-fluid" src="img/rop-img/rop-5.png">
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
         <i>(Payload oluşturmak - yardımcı araçları kullanmak için <a href = "https://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/">https://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/</a> adresini kullanabilirsiniz.)</i>
@@ -116,14 +116,14 @@
         Taşma işlemimizi başarıyla gerçekleştirdik. Şimdi exploit işlemini sağlıklı gerçekleştirmek için kaç byteden sonrasının EIP'e yazıldığını yani kaç karakterlik bir payload göndermemiz gerektiğini kontrol edelim;
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
-        <img class="img-fluid" src="rop-img/rop-6.png">
+        <img class="img-fluid" src="img/rop-img/rop-6.png">
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
         112 sonucunu aldık. Yani 112 byte'dan sonra yazdığımız her şey EIP'e (instruction pointerimize) etki edecek. <br>
         <code>p exit</code> diyerek exit komutumuzun da adresini alalım.
         
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
-        <img class="img-fluid" src="rop-img/rop-10.png">
+        <img class="img-fluid" src="img/rop-img/rop-10.png">
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
         Payloadımızı oluştururken programın crash vermeden işlemleri sırasıyla yapması için şu şekilde bir ROP chain oluşturacağız;
@@ -136,7 +136,7 @@
         <code>./rop "$(python2 -c 'print "A"*112 + "\xad\x61\x55\x56" + "\xc0\x71\xdb\xf7"')"</code>
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
-        <img class="img-fluid" src="rop-img/rop-9.png">
+        <img class="img-fluid" src="img/rop-img/rop-9.png">
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
         Gördüğünüz gibi programda bulunan fakat çağrılmamış bir fonksiyonu çağırmayı başardık.<br> 
@@ -148,20 +148,20 @@
 
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
-        <img class="img-fluid" src="rop-img/rop-2.png">
+        <img class="img-fluid" src="img/rop-img/rop-2.png">
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
         
         <code>b main</code> komutunu kullanarak main fonksiyonumuza breakpoint atıyor ve programımızı başlatıyoruz. Atak senaryomuza başlamadan önce programa dahil edilmiş libraryleri <code>ldd</code> aracılığı ile kontrol edelim.
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
-        <img class="img-fluid" src="rop-img/rop-2.1.png">
+        <img class="img-fluid" src="img/rop-img/rop-2.1.png">
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
         Resimde gördüğümüz gibi standart libraryimiz olan libc programımıza include edilmiş gözüküyor. Atak senaryomuzu gerçekleştirmek / shell alabilmemiz için bu kütüphaneyi kullanacağız.
         <br>Programımız breakpoint bıraktığımız yerde durduktan sonra system, exit ve libc kütüphanemiz içinde shell almamıza yarayacak olan "/bin/sh" adresini ve programdaki çağrıların adreslerini kontrol ediyoruz.
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
-        <img class="img-fluid" src="rop-img/rop-3.1.png">
+        <img class="img-fluid" src="img/rop-img/rop-3.1.png">
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
         Kütüphanemizle alakalı bilgileri, ilgili adreslerimizi edindik. Bir önceki örnekten ne kadar uzunlukta bir payload göndermemiz gerektiğini ve EIP adresini bildiğimiz için bu işlemleri tekrarlamıyorum.<br>
@@ -195,7 +195,7 @@
 
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
-        <img class="img-fluid" src="rop-img/rop-7.png">
+        <img class="img-fluid" src="img/rop-img/rop-7.png">
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
         g0t shell! Dışarıdan herhangi bir shellcode göndermeden sadece programın kendi içindeki kütüphanelerini kullanarak shell aldık. Biraz detaylandırmak gerekirse;<br>
@@ -212,7 +212,7 @@
         
         <div style="width:100%;margin-top:10px;margin-bottom:20;"></div>
 
-        <img class="img-fluid" src="rop-img/rop-14.png">
+        <img class="img-fluid" src="img/rop-img/rop-14.png">
         <div style="width:100%;margin-top:10px;margin-bottom:20px;"></div>
 
 
