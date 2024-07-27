@@ -55,7 +55,7 @@
 		When I go to the data directory of my application and list the files, as you can see in the picture, our lib folder welcomes us. <br>Here, showing another directory with an arrow next to the lib folder indicates that a <strong>symlink</strong> has been made to that directory. So our actual directory is actually the directory specified there.
 		<br><br>
 		Let's list the "lib" folder.<br><br>
-		<a href="img/list_libs.PNG" data-toggle="lightbox">
+		<a href="../img/list_libs.PNG" data-toggle="lightbox">
 				<img class="img-fluid" src="https://ahmeth4n.github.io/img/list_libs.PNG" style="width:300px;">
          </a>
 		<br><br>
@@ -64,7 +64,7 @@
 		We are searching SSL pinning libraries. I always starting search some string in lib folder. This strings contains SSL function names. 
 		<br>When some libraries are searched on google, we come across many results about what they do. But if libraries are special coding you're not find google or anyplace.<br>
 		so i think most clearly method is string search method. let's search SSL library.<br><br>
-		<a href="img/ssl_lib.PNG" data-toggle="lightbox">
+		<a href="../img/ssl_lib.PNG" data-toggle="lightbox">
 				<img class="img-fluid" src="https://ahmeth4n.github.io/img/ssl_lib.PNG" >
          </a>
 		<br><br>
@@ -72,7 +72,7 @@
 		I searched library names on google and i saw some guys cracked <strong>"libsscronet.so"</strong> before me. but cracked library version is too old version. so I priority on <strong>"libsscronet.so"</strong>. <br>
 		We are analysed remaining libraries on ghidra.<br><br>
 		
-		<a href="img/ssl_lib.PNG" data-toggle="lightbox">
+		<a href="../img/ssl_lib.PNG" data-toggle="lightbox">
 				<img class="img-fluid" src="https://ahmeth4n.github.io/img/tiktok_ssl.PNG" style="width:300px;">
          </a>
 		 
@@ -86,37 +86,37 @@
 		<br>I prefer second method for this application. Because i was search ssl prefix and i saw <span class="code-text">SSL_CTX_set_custom_verify</span> function. <br><br>
 		If we take a closer look at this function, you will understand why I chose this method.
 		<br><br>
-				 <a  style="text-align:center;" href="img/ssl_verify3.PNG" data-toggle="lightbox">
+				 <a  style="text-align:center;" href="../img/ssl_verify3.PNG" data-toggle="lightbox">
 						<img style="width:300px;" class="img-fluid" src="https://ahmeth4n.github.io/img/ssl_verify3.PNG" >
 				 </a>
-				 <a style="text-align:center;" href="img/certificate.PNG" data-toggle="lightbox">
+				 <a style="text-align:center;" href="../img/certificate.PNG" data-toggle="lightbox">
 						<img style="width:300px;" class="img-fluid" src="https://ahmeth4n.github.io/img/certificate.PNG" >
 				 </a>
 		<br><br>
 		This function is under certificate verification in the official documentation. I think we found true function! <br>We should examine a little more.<br><br>
 		After a long search on the internet, I found a small script and edited it myself. This little script helps us to list the functions we want for our target library. <br><br>Let's run it and see.
 		<br><br>
-		<a href="img/list_modules.PNG" data-toggle="lightbox">
+		<a href="../img/list_modules.PNG" data-toggle="lightbox">
 				<img  class="img-fluid" src="https://ahmeth4n.github.io/img/list_modules.PNG" >
 		</a><br>
 		You can access the script here; <a href="https://github.com/Ahmeth4n/android-frida-script-archive/blob/main/list_library_modules.js">https://github.com/Ahmeth4n/android-frida-script-archive/blob/main/list_library_modules.js</a>
 
 		<br><br>
 		Result:<br>
-		<a href="img/hook_funcs.PNG" data-toggle="lightbox">
+		<a href="../img/hook_funcs.PNG" data-toggle="lightbox">
 				<img style="width:40%;" class="img-fluid" src="https://ahmeth4n.github.io/img/hook_funcs.PNG" >
 		</a>
 		
 		<br><br>
 		Instead of using this script, we could also trace with the jnitrace (<a href="https://github.com/chame1eon/jnitrace">https://github.com/chame1eon/jnitrace</a>) tool. <br>
 		Let's trace and see the result;<br><br>
-		<a href="img/jnitrace.PNG" data-toggle="lightbox">
+		<a href="../img/jnitrace.PNG" data-toggle="lightbox">
 				<img style="width:40%;" class="img-fluid" src="https://ahmeth4n.github.io/img/jnitrace.PNG" >
 		</a>
 		<br><br>
 		I think we're pretty sure we're in the right place now. Let's go back to <strong>Ghidra</strong> and examine it in more detail.
 		<br><br>
-		<a href="img/tiktok.PNG" data-toggle="lightbox">
+		<a href="../img/tiktok.PNG" data-toggle="lightbox">
 				<img style="width:60%;" class="img-thumbnail" src="https://ahmeth4n.github.io/img/tiktok.PNG" >
 		</a>
 		<br>This method have 3 parameters. <br><br>
@@ -127,7 +127,7 @@
 		<br><br>Finally, I open the library in IDA to view it in detail. (no reason, I like it :X)
 		<br>Find same function and press F5 show pseudo code.<br><br>
 		
-		<a href="img/detail_psuedo.PNG" data-toggle="lightbox">
+		<a href="../img/detail_psuedo.PNG" data-toggle="lightbox">
 			<img style="width:60%;" class="img-thumbnail" src="https://ahmeth4n.github.io/img/detail_psuedo.PNG" >
 		</a>
 		<br><br>
@@ -136,7 +136,7 @@
 		If this method returns 1, we cannot block application traffic. We need to set the operation of this block to work in reverse. <br>The function must end with <span class="code-text">return 0;</span><br><br>
 		When we view this part from the hex editor, we change the value of <span class="code-text">01 20</span>, which corresponds to the value of 1, to <span class="code-text">00 20</span> (if it does not work, 00 00). <br>And the result:
 		<br><br>
-		<a href="img/tiktok3.PNG" data-toggle="lightbox">
+		<a href="../img/tiktok3.PNG" data-toggle="lightbox">
 			<img style="width:60%;" class="img-thumbnail" src="https://ahmeth4n.github.io/img/changed_hex.PNG" >
 		</a>
 		<br><br>now function return 0 and the <span class="code-text">game over..</span><br><br>
