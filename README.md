@@ -1,5 +1,2 @@
-Ahmethan GULTEKIN kisisel blog.
+this is my personal space.
 
-contact;
-ahmeth4n@gmail.com
-twitter.com/ahmeth4n_
