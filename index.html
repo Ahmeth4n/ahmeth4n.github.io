@@ -4,22 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ahmethan Gultekin</title>
-    <meta name="description" content="Personal blog of a security researcher specializing in mobile application security, reverse engineering, and software obfuscation.">
-    <meta name="keywords" content="security research, mobile security, reverse engineering, android security, web security, 8-bit, arcade, blog">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --arcade-dark: #0f0f0f;
-            --arcade-darker: #1a1a1a;
-            --arcade-yellow: #ffb000;
-            --arcade-bright-yellow: #ffd700;
-            --arcade-cream: #fff3e0;
-            --arcade-purple: #6c5ce7;
-            --arcade-blue: #74b9ff;
-            --arcade-gray: #636e72;
-            --arcade-light-gray: #b2bec3;
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
@@ -27,71 +12,60 @@
         }
 
         body {
-            font-family: 'JetBrains Mono', monospace;
-            background: var(--arcade-dark);
-            color: var(--arcade-cream);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            color: #111827;
             line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 768px;
             margin: 0 auto;
             padding: 0 24px;
         }
 
-        /* Header */
-        .header {
-            border-bottom: 4px solid var(--arcade-yellow);
-            padding: 32px 0;
-            background: var(--arcade-darker);
-            position: sticky;
-            top: 0;
-            z-index: 40;
+        header {
+            padding: 48px 0;
         }
 
-        .header h1 {
-            color: var(--arcade-yellow);
-            font-size: 24px;
-            margin-bottom: 24px;
-            font-family: 'Press Start 2P', monospace;
+        h1 {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 8px;
         }
 
-        .nav {
+        .subtitle {
+            color: #4b5563;
+        }
+
+        nav {
             display: flex;
+            gap: 24px;
+            margin-bottom: 48px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e5e7eb;
             flex-wrap: wrap;
-            gap: 12px;
         }
 
-        .nav-button {
-            padding: 12px 24px;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 10px;
-            text-transform: uppercase;
-            border: 4px solid var(--arcade-yellow);
-            background: transparent;
-            color: var(--arcade-yellow);
+        nav button {
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            padding: 0;
+            transition: color 0.2s;
         }
 
-        .nav-button.active {
-            background: var(--arcade-yellow);
-            color: var(--arcade-dark);
-            box-shadow: 6px 6px 0px var(--arcade-bright-yellow);
+        nav button:hover {
+            color: #111827;
         }
 
-        .nav-button:not(.active):hover {
-            background: var(--arcade-yellow);
-            color: var(--arcade-dark);
-            box-shadow: 4px 4px 0px var(--arcade-yellow);
-        }
-
-        /* Main Content */
-        .main {
-            padding: 24px 0;
+        nav button.active {
+            color: #111827;
+            border-bottom: 2px solid #111827;
+            padding-bottom: 4px;
         }
 
         .section {
@@ -102,600 +76,385 @@
             display: block;
         }
 
-        /* Game Window Component */
-        .game-window {
-            border: 4px solid var(--arcade-yellow);
-            background: var(--arcade-darker);
-            margin-bottom: 32px;
-            overflow: hidden;
-        }
-
-        .game-header {
-            background: var(--arcade-yellow);
-            color: var(--arcade-dark);
-            padding: 16px 24px;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 12px;
-            font-weight: bold;
-            min-height: 48px;
+        .section-header {
             display: flex;
             align-items: center;
-            position: relative;
+            gap: 8px;
+            margin-bottom: 24px;
         }
 
-        .game-header::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 12px;
-            transform: translateY(-50%);
-            width: 12px;
-            height: 12px;
-            background: var(--arcade-dark);
-            border-radius: 50%;
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
         }
 
-        .game-header::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 32px;
-            transform: translateY(-50%);
-            width: 12px;
-            height: 12px;
-            background: var(--arcade-bright-yellow);
-            border-radius: 50%;
+        .content {
+            margin-bottom: 24px;
         }
 
-        .game-header .title {
-            margin-left: 40px;
-            line-height: 1.2;
-        }
-
-        .game-content {
-            padding: 32px;
-        }
-
-        /* Grid Layout */
-        .grid {
-            display: grid;
-            gap: 32px;
-        }
-
-        .grid-2 {
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        }
-
-        /* Buttons */
-        .arcade-button {
-            display: inline-block;
-            padding: 12px 16px;
-            border: 4px solid var(--arcade-yellow);
-            color: var(--arcade-yellow);
-            text-decoration: none;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 10px;
-            text-transform: uppercase;
-            text-align: center;
-            background: transparent;
-            cursor: pointer;
-        }
-
-        .arcade-button:hover {
-            background: var(--arcade-yellow);
-            color: var(--arcade-dark);
-            box-shadow: 4px 4px 0px var(--arcade-yellow);
-        }
-
-        .arcade-button-purple {
-            border-color: var(--arcade-purple);
-            color: var(--arcade-purple);
-        }
-
-        .arcade-button-purple:hover {
-            background: var(--arcade-purple);
-            color: var(--arcade-cream);
-            box-shadow: 4px 4px 0px var(--arcade-purple);
-        }
-
-        .arcade-button-blue {
-            border-color: var(--arcade-blue);
-            color: var(--arcade-blue);
-        }
-
-        .arcade-button-blue:hover {
-            background: var(--arcade-blue);
-            color: var(--arcade-cream);
-            box-shadow: 4px 4px 0px var(--arcade-blue);
-        }
-
-        .arcade-button-small {
-            padding: 8px 12px;
-            border: 2px solid var(--arcade-bright-yellow);
-            color: var(--arcade-bright-yellow);
-            font-size: 8px;
-        }
-
-        .arcade-button-small:hover {
-            background: var(--arcade-bright-yellow);
-            color: var(--arcade-dark);
-            box-shadow: 4px 4px 0px var(--arcade-bright-yellow);
-        }
-
-        /* Cards */
-        .blog-card {
-            background: rgba(15, 15, 15, 0.4);
-            padding: 24px;
-            border: 2px solid rgba(255, 176, 0, 0.3);
+        p {
+            color: #374151;
             margin-bottom: 16px;
         }
 
-        .blog-card:hover {
-            border-color: rgba(255, 176, 0, 0.6);
+        a {
+            text-decoration: underline;
+            color: #111827;
         }
 
-        .blog-number {
-            color: var(--arcade-yellow);
-            font-weight: bold;
-            min-width: 50px;
-            font-size: 12px;
-            background: var(--arcade-darker);
-            padding: 8px 12px;
-            border: 2px solid var(--arcade-yellow);
-            font-family: 'Press Start 2P', monospace;
-            display: inline-block;
-            margin-right: 16px;
+        a:hover {
+            color: #6b7280;
         }
 
-        .training-card {
-            background: rgba(15, 15, 15, 0.2);
-            padding: 16px;
-            border: 2px solid rgba(108, 92, 231, 0.3);
-            margin-bottom: 16px;
+        .research-section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
         }
 
-        .training-card:hover {
-            border-color: rgba(108, 92, 231, 0.6);
-        }
-
-        .talk-card {
-            background: rgba(15, 15, 15, 0.4);
-            padding: 24px;
-            border: 2px solid rgba(116, 185, 255, 0.3);
-            margin-bottom: 16px;
-        }
-
-        .talk-card:hover {
-            border-color: rgba(116, 185, 255, 0.6);
-        }
-
-        .research-card {
-            background: rgba(15, 15, 15, 0.3);
-            padding: 16px;
-            border: 2px solid rgba(255, 215, 0, 0.3);
+        .research-title {
+            font-size: 14px;
+            font-weight: 600;
             margin-bottom: 12px;
         }
 
-        .research-card:hover {
-            border-color: rgba(255, 215, 0, 0.6);
+        .research-list {
+            list-style: none;
         }
 
-        /* Links */
-        a:not(.arcade-button):not(.arcade-button-small):not(.nav-button) {
-            color: var(--arcade-bright-yellow);
-            text-decoration: underline;
+        .research-list li {
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 8px;
         }
 
-        a:not(.arcade-button):not(.arcade-button-small):not(.nav-button):hover {
-            color: var(--arcade-yellow);
+        .blog-list {
+            list-style: none;
         }
 
-        /* Footer */
-        .footer {
-            border-top: 4px solid var(--arcade-yellow);
-            padding: 32px 0;
-            text-align: center;
-            background: var(--arcade-darker);
+        .blog-item {
+            border-bottom: 1px solid #f3f4f6;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
         }
 
-        .footer p {
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--arcade-gray);
+        .blog-item:last-child {
+            border-bottom: none;
+        }
+
+        .blog-number {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-right: 12px;
+        }
+
+        .talk-item, .training-item {
+            border-bottom: 1px solid #f3f4f6;
+            padding-bottom: 24px;
+            margin-bottom: 24px;
+        }
+
+        .talk-item:last-child, .training-item:last-child {
+            border-bottom: none;
+        }
+
+        .talk-title, .training-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .talk-authors, .training-location {
+            font-size: 14px;
+            color: #4b5563;
+            margin-bottom: 4px;
+        }
+
+        .talk-year, .training-date {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-bottom: 12px;
+        }
+
+        .pdf-link {
             font-size: 14px;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .game-content {
-                padding: 16px;
-            }
-            
-            .game-header {
-                padding: 16px;
-                font-size: 10px;
-            }
-            
-            .nav-button {
-                padding: 8px 16px;
-                font-size: 8px;
-            }
-            
-            .header h1 {
-                font-size: 18px;
-            }
+        .contact-info {
+            margin-bottom: 16px;
         }
 
-        /* Utility Classes */
-        .mb-6 { margin-bottom: 24px; }
-        .mb-4 { margin-bottom: 16px; }
-        .mb-3 { margin-bottom: 12px; }
-        .text-sm { font-size: 14px; }
-        .text-base { font-size: 16px; }
-        .font-bold { font-weight: bold; }
-        .flex { display: flex; }
-        .items-center { align-items: center; }
-        .justify-center { justify-content: center; }
-        .justify-between { justify-content: space-between; }
-        .gap-2 { gap: 8px; }
-        .gap-3 { gap: 12px; }
-        .gap-4 { gap: 16px; }
-        .space-y-3 > * + * { margin-top: 12px; }
-        .space-y-4 > * + * { margin-top: 16px; }
-        .leading-relaxed { line-height: 1.625; }
-        .px-3 { padding-left: 12px; padding-right: 12px; }
-        .py-1 { padding-top: 4px; padding-bottom: 4px; }
-        .py-2 { padding-top: 8px; padding-bottom: 8px; }
-        .min-w-50 { min-width: 50px; }
+        .contact-label {
+            color: #6b7280;
+        }
+
+        .links-section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .links-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .links a {
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .links a:hover {
+            color: #111827;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 32px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            padding-bottom: 32px;
+        }
+
+        footer p {
+            font-size: 14px;
+            color: #9ca3af;
+        }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
+    <div class="container">
+        <header>
             <h1>Ahmethan Gultekin</h1>
-            <nav class="nav">
-                <button class="nav-button active" onclick="showSection('home')">
-                    about
-                </button>
-                <button class="nav-button" onclick="showSection('blog')">
-                    blog
-                </button>
-                <button class="nav-button" onclick="showSection('talks')">
-                    talks
-                </button>
-                <button class="nav-button" onclick="showSection('trainings')">
-                    TRAININGS
-                </button>
-                <button class="nav-button" onclick="showSection('research')">
-                    research
-                </button>
-            </nav>
-        </div>
-    </header>
+            <p class="subtitle">security researcher</p>
+        </header>
 
-    <!-- Main Content -->
-    <main class="main">
-        <div class="container">
-            <!-- Home Section -->
-            <section id="home" class="section active">
-                <div class="game-window">
-                    <div class="game-header">
-                        <span class="title">About Me</span>
+        <nav>
+            <button class="active" onclick="showSection('about')">about</button>
+            <button onclick="showSection('blog')">blog</button>
+            <button onclick="showSection('talks')">talks</button>
+            <button onclick="showSection('trainings')">trainings</button>
+            <button onclick="showSection('contact')">contact</button>
+        </nav>
+
+        <main>
+            <section id="about" class="section active">
+                <div class="section-header">
+                    <h2 class="section-title">About Me</h2>
+                </div>
+                <div class="content">
+                    <p>
+                        hey! i am an ordinary security researcher. i have been working in the fields of mobile application security
+                        and web application security since 2012. sometimes i publish blog posts, and sometimes i give training at
+                        various conferences.
+                    </p>
+                    <p>
+                        in recent years, i have been providing consultancy services and developing products in mobile application
+                        security through <a href="https://byterialab.com/" target="_blank" rel="noopener noreferrer">Byteria</a>, the company i founded. also i actively provide
+                        private and public training!
+                    </p>
+                </div>
+                <div class="research-section">
+                    <h3 class="research-title">Research Interests</h3>
+                    <ul class="research-list">
+                        <li>• mobile application security analysis</li>
+                        <li>• software obfuscation and deobfuscation</li>
+                        <li>• static and dynamic program analysis</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="blog" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Blog Posts</h2>
+                </div>
+                <ul class="blog-list">
+                    <li class="blog-item">
+                        <span class="blog-number">01</span>
+                        <a href="https://blog.byterialab.com/reversing-googles-new-vm-based-integrity-protection-pairip/" target="_blank" rel="noopener noreferrer">
+                            Reversing Google's New VM-Based Integrity Protection: PairIP
+                        </a>
+                    </li>
+                    <li class="blog-item">
+                        <span class="blog-number">02</span>
+                        <a href="https://www.fbyte.org/2023/03/a-bit-of-obfuscation-mba-expressions.html" target="_blank" rel="noopener noreferrer">
+                            a bit of obfuscation: MBA expressions, opaque predicates, affine functions
+                        </a>
+                    </li>
+                    <li class="blog-item">
+                        <span class="blog-number">03</span>
+                        <a href="https://www.fbyte.org/2023/01/how-does-safetynet-work-fight-with.html" target="_blank" rel="noopener noreferrer">
+                            android - how does safetynet work? (fight with instagram)
+                        </a>
+                    </li>
+                    <li class="blog-item">
+                        <span class="blog-number">04</span>
+                        <a href="https://ahmeth4n.github.io/blog/android_native-library_hooking-tiktok-ssl-bypass.html" target="_blank" rel="noopener noreferrer">
+                            what is this "native library"? native library hooking / TikTok SSL Unpinning
+                        </a>
+                    </li>
+                    <li class="blog-item">
+                        <span class="blog-number">05</span>
+                        <a href="https://ahmeth4n.github.io/blog/return-orriented-programming-nedir-ret2libc.html" target="_blank" rel="noopener noreferrer">
+                            ROP (Return Orriented Programming) Nedir? biraz rop, biraz libc..
+                        </a>
+                    </li>
+                    <li class="blog-item">
+                        <span class="blog-number">06</span>
+                        <a href="https://ahmeth4n.github.io/blog/plesk-laravel-toolkit-disclosure-of-all-domains-on-the-server.html" target="_blank" rel="noopener noreferrer">
+                            Plesk Laravel Toolkit - Disclosure of All Domains On The Server
+                        </a>
+                    </li>
+                    <li class="blog-item">
+                        <span class="blog-number">07</span>
+                        <a href="https://ahmeth4n.github.io/blog/android-reversing-frida-method-overloading.html" target="_blank" rel="noopener noreferrer">
+                            android - how can i hook overloaded methods?
+                        </a>
+                    </li>
+                    <li class="blog-item">
+                        <span class="blog-number">08</span>
+                        <a href="https://ahmeth4n.github.io/blog/paypal-xxe-oob-vuln.html" target="_blank" rel="noopener noreferrer">
+                            PayPal XML External Entity Vulnerability
+                        </a>
+                    </li>
+                    <li class="blog-item">
+                        <span class="blog-number">09</span>
+                        <a href="https://ahmeth4n.github.io/blog/wordpress-japanese-antiseo-malware.html" target="_blank" rel="noopener noreferrer">
+                            Wordpress Japanesse AntiSEO Malware
+                        </a>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="talks" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Talks & Workshops</h2>
+                </div>
+                <div>
+                    <div class="talk-item">
+                        <h3 class="talk-title">r2con2025 - Devirtualizing VM-Based Obfuscation in Android</h3>
+                        <p class="talk-authors">Ahmethan Gultekin</p>
+                        <p class="talk-year">2025</p>
+                        <a href="https://github.com/radareorg/r2con2025/blob/main/AndroidVMDevirtualize/presentation/r2con_android_vm_devirtualize_slides.pdf" target="_blank" rel="noopener noreferrer" class="pdf-link">
+                            view slides (pdf)
+                        </a>
                     </div>
-                    <div class="game-content">
-                        <p class="leading-relaxed mb-6">
-                            hey! i am an ordinary security researcher. i have been working in the fields of mobile application security and web application security since 2012.
-                            sometimes i publish blog posts, and sometimes i give training at various conferences.
-                            in recent years, i have been providing consultancy services and developing products in mobile application security through
-                            <a href="https://byterialab.com/" target="_blank">Byteria</a>, the company i founded.
-                            also i actively provide private and public training!
+                    <div class="talk-item">
+                        <h3 class="talk-title">DPUSec - Deep Dive into SSL Pinning</h3>
+                        <p class="talk-authors">Ahmethan Gultekin</p>
+                        <p class="talk-year">2025</p>
+                        <a href="https://ahmeth4n.github.io/slides/SSL%20Pinning%20with%20Different%20Variations.pdf" target="_blank" rel="noopener noreferrer" class="pdf-link">
+                            view slides (pdf)
+                        </a>
+                    </div>
+                    <div class="talk-item">
+                        <h3 class="talk-title">RaConf - Android Mobile Security Training</h3>
+                        <p class="talk-authors">Ahmethan Gultekin - M. Faris Acar</p>
+                        <p class="talk-year">2025</p>
+                        <a href="https://ahmeth4n.github.io/slides/RaCONF%20-%20Mobile%20App%20Security%20Training%20(1).pdf" target="_blank" rel="noopener noreferrer" class="pdf-link">
+                            view slides (pdf)
+                        </a>
+                    </div>
+                    <div class="talk-item">
+                        <h3 class="talk-title">Altinbas Uni. Bootcamp - Mobile Security Training</h3>
+                        <p class="talk-authors">Ahmethan Gultekin - M. Faris Acar</p>
+                        <p class="talk-year">2025</p>
+                        <a href="https://ahmeth4n.github.io/slides/Altinbas%20Uni%20Bootcamp%202025.pdf" target="_blank" rel="noopener noreferrer" class="pdf-link">
+                            view slides (pdf)
+                        </a>
+                    </div>
+                    <div class="talk-item">
+                        <h3 class="talk-title">SiberVatan - Mobile Application Security Training</h3>
+                        <p class="talk-authors">Ahmethan Gultekin - Eren Simsek</p>
+                        <p class="talk-year">2024</p>
+                        <a href="https://ahmeth4n.github.io/slides/SiberVatan%20-%20Mobil%20Uygulama%20Guvenligi%20(2024)%20.pdf" target="_blank" rel="noopener noreferrer" class="pdf-link">
+                            view slides (pdf)
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="trainings" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Past Trainings</h2>
+                </div>
+                <div>
+                    <div class="training-item">
+                        <h3 class="training-title">Android Application Security Training</h3>
+                        <p class="training-location">Remote, Private Training</p>
+                        <p class="training-date">2024-08-10</p>
+                    </div>
+                    <div class="training-item">
+                        <h3 class="training-title">Mobile Application Security Training</h3>
+                        <p class="training-location">SiberVatan, Antalya</p>
+                        <p class="training-date">2024-07-21</p>
+                    </div>
+                    <div class="training-item">
+                        <h3 class="training-title">Dynamic Code Analysis Training</h3>
+                        <p class="training-location">Remote, Private Training</p>
+                        <p class="training-date">2023-10-23</p>
+                    </div>
+                    <div class="training-item">
+                        <h3 class="training-title">Mobile Reversing Techniques Training</h3>
+                        <p class="training-location">Remote, Private Training</p>
+                        <p class="training-date">2023-09-10</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Contact</h2>
+                </div>
+                <div class="content">
+                    <p>
+                        you can get information about trainings and contact me via email.
+                    </p>
+                    <div class="contact-info">
+                        <p>
+                            <span class="contact-label">email:</span>
+                            <a href="mailto:hello@byterialab.com">hello@byterialab.com</a>
                         </p>
                         <p>
-                            you can get information about trainings and contact me via
-                            <a href="mailto:hello@byterialab.com">hello@byterialab.com</a>.
+                            <span class="contact-label">personal:</span>
+                            <a href="mailto:ahmeth4n@gmail.com">ahmeth4n@gmail.com</a>
                         </p>
                     </div>
                 </div>
-
-                <div class="grid grid-2">
-                    <div class="game-window">
-                        <div class="game-header">
-                            <span class="title">Contact Links</span>
-                        </div>
-                        <div class="game-content">
-                            <div class="space-y-4">
-                                <a href="mailto:ahmeth4n@gmail.com" class="arcade-button flex items-center justify-center gap-2">
-                                    MAIL
-                                </a>
-                                <a href="https://www.linkedin.com/in/ahmethangultekin/" class="arcade-button arcade-button-purple flex items-center justify-center gap-2">
-                                    LINKEDIN
-                                </a>
-                                <a href="https://github.com/Ahmeth4n" class="arcade-button arcade-button-blue flex items-center justify-center gap-2">
-                                    GITHUB
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="game-window">
-                        <div class="game-header">
-                            <span class="title">Publications</span>
-                        </div>
-                        <div class="game-content">
-                            <div class="flex items-center gap-3">
-                                <span class="text-sm">Akıllı TV Hackleyelim Mi? (Arka Kapı Dergi): 2021</span>
-                            </div>
-                        </div>
+                <div class="links-section">
+                    <h3 class="links-title">Links</h3>
+                    <div class="links">
+                        <a href="https://www.linkedin.com/in/ahmethangultekin/" target="_blank" rel="noopener noreferrer">linkedin</a>
+                        <a href="https://github.com/Ahmeth4n" target="_blank" rel="noopener noreferrer">github</a>
                     </div>
                 </div>
             </section>
+        </main>
 
-            <!-- Blog Section -->
-            <section id="blog" class="section">
-                <div class="game-window">
-                    <div class="game-header">
-                        <span class="title">Latest Blog Posts</span>
-                    </div>
-                    <div class="game-content">
-                        <div class="space-y-4">
-                            <div class="blog-card">
-                                <div class="flex items-start gap-4">
-                                    <span class="blog-number">01</span>
-                                    <a href="https://blog.byterialab.com/reversing-googles-new-vm-based-integrity-protection-pairip/" target="_blank" class="text-sm leading-relaxed flex-1">
-                                        Reversing Google's New VM-Based Integrity Protection: PairIP
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="blog-card">
-                                <div class="flex items-start gap-4">
-                                    <span class="blog-number">02</span>
-                                    <a href="https://www.fbyte.org/2023/03/a-bit-of-obfuscation-mba-expressions.html" target="_blank" class="text-sm leading-relaxed flex-1">
-                                        a bit of obfuscation: MBA expressions, opaque predicates, affine functions
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="blog-card">
-                                <div class="flex items-start gap-4">
-                                    <span class="blog-number">03</span>
-                                    <a href="https://www.fbyte.org/2023/01/how-does-safetynet-work-fight-with.html" target="_blank" class="text-sm leading-relaxed flex-1">
-                                        android - how does safetynet work? (fight with instagram)
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="blog-card">
-                                <div class="flex items-start gap-4">
-                                    <span class="blog-number">04</span>
-                                    <a href="https://ahmeth4n.github.io/blog/android_native-library_hooking-tiktok-ssl-bypass.html" target="_blank" class="text-sm leading-relaxed flex-1">
-                                        what is this "native library"? native library hooking / TikTok SSL Unpinning
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="blog-card">
-                                <div class="flex items-start gap-4">
-                                    <span class="blog-number">05</span>
-                                    <a href="https://ahmeth4n.github.io/blog/return-orriented-programming-nedir-ret2libc.html" target="_blank" class="text-sm leading-relaxed flex-1">
-                                        ROP (Return Orriented Programming) Nedir? biraz rop, biraz libc..
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="blog-card">
-                                <div class="flex items-start gap-4">
-                                    <span class="blog-number">06</span>
-                                    <a href="https://ahmeth4n.github.io/blog/plesk-laravel-toolkit-disclosure-of-all-domains-on-the-server.html" target="_blank" class="text-sm leading-relaxed flex-1">
-                                        Plesk Laravel Toolkit - Disclosure of All Domains On The Server
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="blog-card">
-                                <div class="flex items-start gap-4">
-                                    <span class="blog-number">07</span>
-                                    <a href="https://ahmeth4n.github.io/blog/android-reversing-frida-method-overloading.html" target="_blank" class="text-sm leading-relaxed flex-1">
-                                        android - how can i hook overloaded methods?
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="blog-card">
-                                <div class="flex items-start gap-4">
-                                    <span class="blog-number">08</span>
-                                    <a href="https://ahmeth4n.github.io/blog/paypal-xxe-oob-vuln.html" target="_blank" class="text-sm leading-relaxed flex-1">
-                                        PayPal XML External Entity Vulnerability
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="blog-card">
-                                <div class="flex items-start gap-4">
-                                    <span class="blog-number">09</span>
-                                    <a href="https://ahmeth4n.github.io/blog/wordpress-japanese-antiseo-malware.html" target="_blank" class="text-sm leading-relaxed flex-1">
-                                        Wordpress Japanesse AntiSEO Malware
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Talks Section -->
-            <section id="talks" class="section">
-                <div class="game-window">
-                    <div class="game-header">
-                        <span class="title">Talks & Workshops</span>
-                    </div>
-                    <div class="game-content">
-                        <div class="space-y-4">
-                            <div class="talk-card">
-                                <h3 class="font-bold text-base mb-3">r2con2025 - Devirtualizing VM-Based Obfuscation in Android</h3>
-                                <div class="flex flex-col gap-2 mb-4">
-                                    <span class="text-sm font-mono px-3 py-1" style="background: var(--arcade-dark); border: 1px solid var(--arcade-bright-yellow); color: var(--arcade-bright-yellow); display: inline-block; width: fit-content;">
-                                        (2025)
-                                    </span>
-                                    <span class="text-sm" style="color: var(--arcade-gray);">Ahmethan Gultekin</span>
-                                </div>
-                                <a href="https://github.com/radareorg/r2con2025/blob/main/AndroidVMDevirtualize/presentation/r2con_android_vm_devirtualize_slides.pdf" target="_blank" class="arcade-button-small">
-                                    PDF
-                                </a>
-                            </div>
-
-                            <div class="talk-card">
-                                <h3 class="font-bold text-base mb-3">DPUSec - Deep Dive into SSL Pinning</h3>
-                                <div class="flex flex-col gap-2 mb-4">
-                                    <span class="text-sm font-mono px-3 py-1" style="background: var(--arcade-dark); border: 1px solid var(--arcade-bright-yellow); color: var(--arcade-bright-yellow); display: inline-block; width: fit-content;">
-                                        (2025)
-                                    </span>
-                                    <span class="text-sm" style="color: var(--arcade-gray);">Ahmethan Gultekin</span>
-                                </div>
-                                <a href="https://ahmeth4n.github.io/slides/SSL%20Pinning%20with%20Different%20Variations.pdf" target="_blank" class="arcade-button-small">
-                                    PDF
-                                </a>
-                            </div>
-                            <div class="talk-card">
-                                <h3 class="font-bold text-base mb-3">RaConf - Android Mobile Security Training</h3>
-                                <div class="flex flex-col gap-2 mb-4">
-                                    <span class="text-sm font-mono px-3 py-1" style="background: var(--arcade-dark); border: 1px solid var(--arcade-bright-yellow); color: var(--arcade-bright-yellow); display: inline-block; width: fit-content;">
-                                        (2025)
-                                    </span>
-                                    <span class="text-sm" style="color: var(--arcade-gray);">Ahmethan Gultekin - M. Faris Acar</span>
-                                </div>
-                                <a href="https://ahmeth4n.github.io/slides/RaCONF%20-%20Mobile%20App%20Security%20Training%20(1).pdf" target="_blank" class="arcade-button-small">
-                                    PDF
-                                </a>
-                            </div>
-                            <div class="talk-card">
-                                <h3 class="font-bold text-base mb-3">Altinbas Uni. Bootcamp - Mobile Security Training</h3>
-                                <div class="flex flex-col gap-2 mb-4">
-                                    <span class="text-sm font-mono px-3 py-1" style="background: var(--arcade-dark); border: 1px solid var(--arcade-bright-yellow); color: var(--arcade-bright-yellow); display: inline-block; width: fit-content;">
-                                        (2025)
-                                    </span>
-                                    <span class="text-sm" style="color: var(--arcade-gray);">Ahmethan Gultekin - M. Faris Acar</span>
-                                </div>
-                                <a href="https://ahmeth4n.github.io/slides/Altinbas%20Uni%20Bootcamp%202025.pdf" target="_blank" class="arcade-button-small">
-                                    PDF
-                                </a>
-                            </div>
-                            <div class="talk-card">
-                                <h3 class="font-bold text-base mb-3">SiberVatan - Mobile Application Security Training</h3>
-                                <div class="flex flex-col gap-2 mb-4">
-                                    <span class="text-sm font-mono px-3 py-1" style="background: var(--arcade-dark); border: 1px solid var(--arcade-bright-yellow); color: var(--arcade-bright-yellow); display: inline-block; width: fit-content;">
-                                        (2024)
-                                    </span>
-                                    <span class="text-sm" style="color: var(--arcade-gray);">Ahmethan Gultekin - Eren Simsek</span>
-                                </div>
-                                <a href="https://ahmeth4n.github.io/slides/SiberVatan%20-%20Mobil%20Uygulama%20Guvenligi%20(2024)%20.pdf" target="_blank" class="arcade-button-small">
-                                    PDF
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Trainings Section -->
-            <section id="trainings" class="section">
-                <div class="game-window">
-                    <div class="game-header">
-                        <span class="title">Past Trainings</span>
-                    </div>
-                    <div class="game-content">
-                        <div class="space-y-4">
-                            <div class="training-card">
-                                <h3 class="font-bold mb-3">Android Application Security Training</h3>
-                                <div class="flex flex-col gap-2">
-                                    <span class="text-sm" style="color: var(--arcade-gray);">Remote, Private Training</span>
-                                    <span class="text-sm font-mono px-3 py-1" style="background: var(--arcade-dark); border: 1px solid var(--arcade-purple); color: var(--arcade-purple); display: inline-block; width: fit-content;">
-                                        2024-08-10
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="training-card">
-                                <h3 class="font-bold mb-3">Mobile Application Security Training</h3>
-                                <div class="flex flex-col gap-2">
-                                    <span class="text-sm" style="color: var(--arcade-gray);">SiberVatan, Antalya</span>
-                                    <span class="text-sm font-mono px-3 py-1" style="background: var(--arcade-dark); border: 1px solid var(--arcade-purple); color: var(--arcade-purple); display: inline-block; width: fit-content;">
-                                        2024-07-21
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="training-card">
-                                <h3 class="font-bold mb-3">Dynamic Code Analysis Training</h3>
-                                <div class="flex flex-col gap-2">
-                                    <span class="text-sm" style="color: var(--arcade-gray);">Remote, Private Training</span>
-                                    <span class="text-sm font-mono px-3 py-1" style="background: var(--arcade-dark); border: 1px solid var(--arcade-purple); color: var(--arcade-purple); display: inline-block; width: fit-content;">
-                                        2023-10-23
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="training-card">
-                                <h3 class="font-bold mb-3">Mobile Reversing Techniques Training</h3>
-                                <div class="flex flex-col gap-2">
-                                    <span class="text-sm" style="color: var(--arcade-gray);">Remote, Private Training</span>
-                                    <span class="text-sm font-mono px-3 py-1" style="background: var(--arcade-dark); border: 1px solid var(--arcade-purple); color: var(--arcade-purple); display: inline-block; width: fit-content;">
-                                        2023-09-10
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Research Section -->
-            <section id="research" class="section">
-                <div class="game-window">
-                    <div class="game-header">
-                        <span class="title">Research Interests</span>
-                    </div>
-                    <div class="game-content">
-                        <div class="space-y-3">
-                            <div class="research-card">
-                                <div class="flex items-center gap-4">
-                                    <span style="color: var(--arcade-bright-yellow); font-size: 18px; font-family: 'JetBrains Mono', monospace;">></span>
-                                    <span style="font-family: 'JetBrains Mono', monospace;">mobile application security analysis</span>
-                                </div>
-                            </div>
-                            <div class="research-card">
-                                <div class="flex items-center gap-4">
-                                    <span style="color: var(--arcade-bright-yellow); font-size: 18px; font-family: 'JetBrains Mono', monospace;">></span>
-                                    <span style="font-family: 'JetBrains Mono', monospace;">software obfuscation and deobfuscation</span>
-                                </div>
-                            </div>
-                            <div class="research-card">
-                                <div class="flex items-center gap-4">
-                                    <span style="color: var(--arcade-bright-yellow); font-size: 18px; font-family: 'JetBrains Mono', monospace;">></span>
-                                    <span style="font-family: 'JetBrains Mono', monospace;">static and dynamic program analysis</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
+        <footer>
             <p>no rights reserved.</p>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <script>
         function showSection(sectionId) {
-            // Hide all sections
             const sections = document.querySelectorAll('.section');
             sections.forEach(section => {
                 section.classList.remove('active');
             });
 
-            // Show selected section
             document.getElementById(sectionId).classList.add('active');
 
-            // Update navigation buttons
-            const buttons = document.querySelectorAll('.nav-button');
+            const buttons = document.querySelectorAll('nav button');
             buttons.forEach(button => {
                 button.classList.remove('active');
             });
 
-            // Add active class to clicked button
             event.target.classList.add('active');
         }
     </script>
