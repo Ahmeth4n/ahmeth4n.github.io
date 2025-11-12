@@ -1,2 +1,1 @@
-this is my personal space.
-
+a blog where many unrelated topics come together
